@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-black
+  }
+
+  label {
+    @apply block text-gray-700 sm:text-lg font-bold mb-2
+  }
+
+  input {
+    @apply border rounded w-full sm:py-2 sm:px-3 py-1 px-2 text-stone-600 leading-tight focus:outline-none text-sm sm:text-base
+  }
+
+  select {
+    @apply border rounded w-full sm:py-2 sm:px-3 py-1 px-3 text-stone-600 leading-tight focus:outline-none text-sm sm:text-base
+  }
+
+  span {
+    @apply text-orange-500 italic text-sm sm:text-base
+  }
+
+  tr, td, th {
+    border: 2px solid rgb(156, 153, 153);
+  }
+
+  th {
+    padding: 0.4rem;
+  }
+
+  form {
+    @apply drop-shadow-md
+  }
+
+  li {
+    @apply sm:p-2 sm:tracking-wide md:px-7 text-stone-600 bg-slate-200 uppercase border border-black px-3 py-1 rounded mt-1 hover:bg-slate-300 hover:transition hover:shadow-lg
+  }
+
+  ul {
+    @apply flex flex-wrap justify-center gap-2 border-double border-b-4 sm:py-2 pb-2 sm:pb-4 border-b-slate-500 bg-stone-100
+  }
+
+  h1 {
+    @apply text-center md:text-3xl text-2xl md:font-bold font-semibold tracking-wide md:mb-3 pb-1 lg:mt-3 text-stone-600 uppercase
+  }
+
+  .scrollers::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollers {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+}
