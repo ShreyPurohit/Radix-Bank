@@ -1,6 +1,6 @@
 import { Context } from "koa"
 import { decrypt } from "../lib/cookieAuth"
-import { loginService, addToWallet, getUserNameAndIDService, sendMoneyService } from "../services/userServices"
+import { loginService, addToWallet, getUserNameAndIDService, sendMoneyService, fetchTransactionsService } from "../services/userServices"
 
 const alreadyLoggedController = (ctx: Context) => {
     const cookie = ctx.cookies.get('loggedIn')
@@ -72,4 +72,13 @@ const sendMoneyController = async (ctx: Context) => {
     }
 }
 
-export { alreadyLoggedController, loginController, logoutController, addToWalletController, getUserNameAndIDController, sendMoneyController }
+const fetchTransactionsController = async (ctx: Context) => {
+    try {
+        const user = ctx.request.body
+        await fetchTransactionsService(user, ctx)
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export { alreadyLoggedController, loginController, logoutController, addToWalletController, getUserNameAndIDController, sendMoneyController, fetchTransactionsController }

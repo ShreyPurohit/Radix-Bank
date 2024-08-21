@@ -23,7 +23,7 @@ const LogoutComponent = () => {
         <>
             {loggedInUser
                 ?
-                <button id="logoutBtn" onClick={handleLogout}>
+                <button id="btnlogout" onClick={handleLogout}>
                     LOGOUT USER
                 </button>
                 :

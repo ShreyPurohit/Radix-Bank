@@ -1,11 +1,5 @@
-import { Document, Model, model, models, Schema } from "mongoose";
-
-interface IEmployeeSchema extends Document {
-    EmployeeId: number,
-    FirstName: string,
-    LastName: string,
-    Email: string
-}
+import { Model, model, models, Schema } from "mongoose";
+import { IEmployeeSchema } from "../lib/interfaces";
 
 const employeeSchema: Schema<IEmployeeSchema> = new Schema<IEmployeeSchema>({
     EmployeeId: { type: Number, required: true, unique: true },

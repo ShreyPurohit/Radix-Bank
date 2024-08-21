@@ -1,5 +1,5 @@
-import { alreadyLoggedIn, loginUserApi, addToWalletApi, sendMoneyApi } from "./usersApi";
-import { IUserState } from "./userSlice";
+import { alreadyLoggedIn, loginUserApi, addToWalletApi, sendMoneyApi, getMyTransactions } from "./usersApi";
+import { IUserState } from "@/lib/interfaces";
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 
 const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
@@ -7,7 +7,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(alreadyLoggedIn.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.loggedInUser = `${action.payload.username}`
+        state.loggedInUser = `${action.payload.username} ${action.payload.id}`
         state.myBalance = action.payload.bankBalance
         state.myWalletBalance = action.payload.walletBalance
     })
@@ -23,7 +23,7 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(loginUserApi.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.loggedInUser = `${action.payload.user.Username}`
+        state.loggedInUser = `${action.payload.user.Username} ${action.payload.user.Id}`
         state.myBalance = action.payload.bankBalance
         state.myWalletBalance = action.payload.walletBalance
     })
@@ -39,8 +39,8 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(addToWalletApi.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.myWalletBalance = action.payload
-        state.myBalance -= action.payload
+        state.myWalletBalance = action.payload.payment
+        state.myBalance = action.payload.total
     })
     builder.addCase(addToWalletApi.pending, (state) => {
         state.loading = true
@@ -54,14 +54,28 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(sendMoneyApi.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
+        state.myWalletBalance = action.payload
     })
     builder.addCase(sendMoneyApi.pending, (state) => {
         state.loading = true
     })
     builder.addCase(sendMoneyApi.rejected, (state, action) => {
-        debugger
         state.loading = false
         state.error = String(action.payload) || "Failed To Add To Wallet"
+    })
+
+    // Fetch Transactions API-------------------------------------
+    builder.addCase(getMyTransactions.fulfilled, (state, action) => {
+        state.loading = false
+        state.error = null
+        state.myTransactions = action.payload
+    })
+    builder.addCase(getMyTransactions.pending, (state) => {
+        state.loading = true
+    })
+    builder.addCase(getMyTransactions.rejected, (state, action) => {
+        state.loading = false
+        state.error = String(action.payload) || "Failed To Fetch My Transactions"
     })
 }
 

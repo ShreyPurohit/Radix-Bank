@@ -1,12 +1,5 @@
-import { Document, Model, model, models, Schema } from "mongoose";
-
-interface ITransactionSchema extends Document {
-    TransactionId: number,
-    SenderId: number,
-    ReceiverId: number,
-    Amount: number,
-    Timestamp: Date
-}
+import { Model, model, models, Schema } from "mongoose";
+import { ITransactionSchema } from "../lib/interfaces";
 
 const transactionSchema: Schema<ITransactionSchema> = new Schema<ITransactionSchema>({
     TransactionId: { type: Number, required: true, unique: true },
@@ -15,7 +8,6 @@ const transactionSchema: Schema<ITransactionSchema> = new Schema<ITransactionSch
     Amount: { type: Number, required: true },
     Timestamp: { type: Date, default: Date.now },
 });
-
 
 const TransactionModel =
     (models.Transaction as Model<ITransactionSchema>) ||

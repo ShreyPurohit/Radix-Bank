@@ -6,6 +6,7 @@ import { parseCookie } from 'koa-cookies'
 import { Server } from 'socket.io'
 import connectMongoDb from './lib/connectToDb'
 import router from './routes/userRoutes'
+import { addUser, removeUser } from './lib/chatFunctions'
 
 const app = new Koa()
 connectMongoDb()
@@ -20,13 +21,29 @@ app.use(parseCookie())
 app.use(router.routes()).use(router.allowedMethods())
 
 io.on('connection', socket => {
-    console.log("New Connection");
-    socket.on('send-notification', (amount, callback) => {
-        console.log(amount);
 
-        const socketID = socket.id
-        io.to(socketID).emit('notification', `Funds added: ${amount}`)
+    socket.on('join room', ({ to }) => {
+        console.log('user', to);
+        socket.join(String(to));
+    })
+
+    socket.on('reciever-join', ({ reciever, amount }, callback) => {
+        socket.join(String(reciever))
+        socket.to(String(reciever)).emit('reciever-notification', `Payment received: ${amount}`)
         callback()
+    })
+
+    socket.on('personal-join', ({ username, amount }: { username: string, amount: number }, callback) => {
+        const { error, user } = addUser({ id: socket.id, username, room: username })
+        if (error) { return callback(error) }
+        socket.join(user?.room!)
+        io.to(user?.room!).emit('personal-notification', `Funds added: ${amount}`)
+        removeUser(socket.id)
+        callback()
+    })
+
+    socket.on('disconnect', () => {
+        removeUser(socket.id)
     })
 })
 

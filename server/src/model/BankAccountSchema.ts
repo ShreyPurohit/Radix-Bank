@@ -1,12 +1,5 @@
-import { Document, Model, model, models, Schema } from "mongoose";
-
-interface IBankAccountSchema extends Document {
-    BankAccountId: number,
-    EmployeeId: number,
-    BankName: string,
-    AccountNumber: string,
-    Balance: number
-}
+import { Model, model, models, Schema } from "mongoose";
+import { IBankAccountSchema } from "../lib/interfaces";
 
 const bankAccountSchema: Schema<IBankAccountSchema> = new Schema<IBankAccountSchema>({
     BankAccountId: { type: Number, required: true, unique: true },

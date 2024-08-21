@@ -14,7 +14,7 @@ interface ILoginInputs {
 const LoginPage = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const { error, loading, loggedInUser } = useAppSelector((state) => state.users)
+    const { error } = useAppSelector((state) => state.users)
 
     const {
         register,
