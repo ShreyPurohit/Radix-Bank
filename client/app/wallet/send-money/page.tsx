@@ -1,16 +1,12 @@
 'use client'
 
+import { ISendMoneyInputs } from '@/lib/interfaces'
 import { getUserNameAndIDApi, sendMoneyApi } from '@/lib/store/features/users/usersApi'
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 import { socket } from '@/socket'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-
-interface ISendMoneyInputs {
-    reciepent: string,
-    amount: string
-}
 
 const SendMoneyPage = () => {
     const dispatch = useAppDispatch()

@@ -72,10 +72,12 @@ const sendMoneyController = async (ctx: Context) => {
     }
 }
 
-const fetchTransactionsController = async (ctx: Context) => {
+const fetchTransactionsController = async (ctx: any) => {
+    const user = ctx.request.body
+    const { page } = ctx.request.query ?? "1"
+    const { limit } = ctx.request.query ?? "4"
     try {
-        const user = ctx.request.body
-        await fetchTransactionsService(user, ctx)
+        await fetchTransactionsService(user, page, limit, ctx)
     } catch (error) {
         console.error(error);
     }

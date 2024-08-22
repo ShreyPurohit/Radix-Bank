@@ -1,6 +1,6 @@
+import { IUserState } from "@/lib/interfaces";
 import { createSlice } from "@reduxjs/toolkit";
 import extraReducers from "./usersExtraReducers";
-import { IUserState } from "@/lib/interfaces";
 
 const initialState: IUserState = {
     loggedInUser: null,
@@ -8,7 +8,10 @@ const initialState: IUserState = {
     error: null,
     myBalance: 0,
     myWalletBalance: 0,
-    myTransactions: []
+    myTransactions: [],
+    totalTransactions: 0,
+    totalPages: 0,
+    currentPage: 1,
 }
 
 export const userSlice = createSlice({

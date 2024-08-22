@@ -85,8 +85,8 @@ const sendMoneyService = async (recieverID: string, senderName: string, amount: 
         const senderWalletMoney = await WalletModel.findOne({ EmployeeId: user?.Id }).select('Balance')
         if (!senderWalletMoney) {
             ctx.status = 400
-            ctx.body = { message: "Wallet not exist" } 
-            return 
+            ctx.body = { message: "Wallet not exist" }
+            return
         }
         if (senderWalletMoney.Balance < Number(amount)) {
             ctx.status = 400
@@ -117,120 +117,61 @@ const sendMoneyService = async (recieverID: string, senderName: string, amount: 
     }
 }
 
-const fetchTransactionsService = async (user: string, ctx: Context) => {
+const fetchTransactionsService = async (user: string, page: string, limit: string, ctx: Context) => {
     try {
         const dbuser = await UserModel.findOne({ Username: user }).select('Id')
         const myTransactions = await TransactionModel.aggregate([
             {
-              $match: { 
-                $or: [ 
-                    { SenderId: dbuser?.Id, }, 
-                    { ReceiverId: dbuser?.Id, },
-                 ],
+                $match: {
+                    $or: [
+                        { SenderId: dbuser?.Id, },
+                        { ReceiverId: dbuser?.Id, },
+                    ],
                 },
             },
             {
-              $lookup:
+                $lookup:
                 {
-                  from: "users",
-                  localField: "SenderId",
-                  foreignField: "Id",
-                  as: "senderDetails",
+                    from: "users",
+                    localField: "SenderId",
+                    foreignField: "Id",
+                    as: "senderDetails",
                 },
             },
             {
-              $lookup:
+                $lookup:
                 {
-                  from: "users",
-                  localField: "ReceiverId",
-                  foreignField: "Id",
-                  as: "receiverDetails",
+                    from: "users",
+                    localField: "ReceiverId",
+                    foreignField: "Id",
+                    as: "receiverDetails",
                 },
             },
             {
-              $unwind: { path: "$senderDetails" },
+                $unwind: { path: "$senderDetails" },
             },
             {
-              $unwind: { path: "$receiverDetails" },
+                $unwind: { path: "$receiverDetails" },
             },
             {
-              $project:
+                $project:
                 {
-                  _id: 0,
-                  senderId: "$senderDetails.Id",
-                  transactionId: "$TransactionId",
-                  senderName: "$senderDetails.Username",
-                  recieverName: "$receiverDetails.Username",
-                  amount: "$Amount",
-                  timestamp: "$Timestamp",
+                    _id: 0,
+                    senderId: "$senderDetails.Id",
+                    transactionId: "$TransactionId",
+                    senderName: "$senderDetails.Username",
+                    recieverName: "$receiverDetails.Username",
+                    amount: "$Amount",
+                    timestamp: "$Timestamp",
                 },
             },
-          ])
+        ]).skip((+(page) - 1) * +(limit)).limit(+(limit))
+        const totalTransactions = await TransactionModel.countDocuments()
+        const totalPages = totalTransactions % 4 == 0 ? Math.floor(totalTransactions / +(limit)) : Math.ceil(totalTransactions / +(limit))
         ctx.status = 200
-        ctx.body = { message: "My Payments History Fetched Successfully", myTransactions }
+        ctx.body = { message: "My Payments History Fetched Successfully", myTransactions, totalTransactions, totalPages, currentPage: page }
     } catch (error) {
         console.error(error);
     }
 }
-
 export { addToWallet, fetchTransactionsService, getUserNameAndIDService, loginService, sendMoneyService };
-// import UserModel from "./path-to-your-user-model";
- 
-// const getTransactionHistoryForUser = async (userId: number) => {
-//     const transactionHistory = await TransactionModel.aggregate([
-//         // Match transactions where the user is either the sender or receiver
-//         {
-//             $match: {
-//                 $or: [
-//                     { SenderId: userId },
-//                     { ReceiverId: userId },
-//                 ],
-//             },
-//         },
-//         // Join with User collection for the sender
-//         {
-//             $lookup: {
-//                 from: "users", // The name of the User collection in MongoDB
-//                 localField: "SenderId", // Field in Transaction collection
-//                 foreignField: "Id", // Field in User collection
-//                 as: "senderDetails",
-//             },
-//         },
-//         // Join with User collection for the receiver
-//         {
-//             $lookup: {
-//                 from: "users", // The name of the User collection in MongoDB
-//                 localField: "ReceiverId", // Field in Transaction collection
-//                 foreignField: "Id", // Field in User collection
-//                 as: "receiverDetails",
-//             },
-//         },
-//         // Unwind sender and receiver details arrays
-//         { $unwind: "$senderDetails" },
-//         { $unwind: "$receiverDetails" },
-//         // Project the required fields
-//         {
-//             $project: {
-//                _id: 0, // Exclude MongoDB's internal ID
-//                 transactionId: "$TransactionId",
-//                 senderName: "$senderDetails.Username",
-//                 receiverName: "$receiverDetails.Username",
-//                 amount: "$Amount",
-//                 timestamp: "$Timestamp",
-//             },
-//         },
-//     ]);
- 
-//     return transactionHistory;
-// };
- 
-// // Usage Example
-// (async () => {
-//     try {
-//         const userId = 123; // Replace with the actual user ID
-//         const history = await getTransactionHistoryForUser(userId);
-//         console.log(history);
-//     } catch (error) {
-//         console.error("Error fetching transaction history:", error);
-//     }
-// })();

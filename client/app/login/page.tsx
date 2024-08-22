@@ -1,15 +1,11 @@
 'use client'
 
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { useAppSelector, useAppDispatch } from '@/lib/store/hooks'
+import { ILoginInputs } from '@/lib/interfaces'
 import { loginUserApi } from '@/lib/store/features/users/usersApi'
-import { toast } from 'react-hot-toast'
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 import { useRouter } from 'next/navigation'
-
-interface ILoginInputs {
-    username: string,
-    password: string
-}
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'react-hot-toast'
 
 const LoginPage = () => {
     const router = useRouter()
@@ -58,7 +54,12 @@ const LoginPage = () => {
                     <input type="password" id='password' placeholder='Password' {...register('password', { required: { value: true, message: "Password is required" } })} />
                     {errors.password && (<span id="passwordErr"> {errors.password.message} </span>)}
                 </div>
-                <button id='btnSubmit' disabled={errors.username || errors.password ? true : false} className="px-4 py-2 bg-slate-400 hover:bg-slate-600 hover:transition hover:text-white rounded-lg disabled:bg-gray-600 disabled:hover:bg-gray-600">Login</button>
+                <button
+                    id='btnSubmit'
+                    disabled={errors.username || errors.password ? true : false}
+                    className="px-4 py-2 bg-slate-400 hover:bg-slate-600 hover:transition hover:text-white rounded-lg disabled:bg-gray-600 disabled:hover:bg-gray-600">
+                    Login
+                </button>
             </form>
         </main>
     )

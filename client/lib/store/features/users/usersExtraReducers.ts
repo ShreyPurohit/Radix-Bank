@@ -39,8 +39,8 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(addToWalletApi.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.myWalletBalance = action.payload.payment
-        state.myBalance = action.payload.total
+        state.myWalletBalance = action.payload!.payment
+        state.myBalance = action.payload!.total
     })
     builder.addCase(addToWalletApi.pending, (state) => {
         state.loading = true
@@ -68,7 +68,10 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(getMyTransactions.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.myTransactions = action.payload
+        state.myTransactions = action.payload.myTransactions
+        state.currentPage = action.payload.currentPage
+        state.totalPages = action.payload.totalPages
+        state.totalTransactions = action.payload.totalTransactions
     })
     builder.addCase(getMyTransactions.pending, (state) => {
         state.loading = true

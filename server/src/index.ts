@@ -23,7 +23,6 @@ app.use(router.routes()).use(router.allowedMethods())
 io.on('connection', socket => {
 
     socket.on('join room', ({ to }) => {
-        console.log('user', to);
         socket.join(String(to));
     })
 

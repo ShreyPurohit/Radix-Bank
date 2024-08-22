@@ -1,10 +1,10 @@
 'use client'
 
-import { useAppSelector, useAppDispatch } from "@/lib/store/hooks";
+import { logoutUsersApi } from "@/lib/store/features/users/usersApi";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { logoutUsersApi } from "@/lib/store/features/users/usersApi";
 
 const LogoutComponent = () => {
     const { loggedInUser } = useAppSelector((state) => state.users)
@@ -21,13 +21,14 @@ const LogoutComponent = () => {
     };
     return (
         <>
-            {loggedInUser
-                ?
-                <button id="btnlogout" onClick={handleLogout}>
-                    LOGOUT USER
-                </button>
-                :
-                <Link href={"/login"}>Login</Link>
+            {
+                loggedInUser
+                    ?
+                    <button id="btnlogout" onClick={handleLogout}>
+                        LOGOUT USER
+                    </button>
+                    :
+                    <Link href={"/login"}>Login</Link>
             }
         </>
     )

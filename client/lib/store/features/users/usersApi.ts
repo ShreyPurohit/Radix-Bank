@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { ITransactions } from "@/lib/interfaces";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!
 
 const loginUserApi = createAsyncThunk(
     'users/login',
@@ -77,8 +77,9 @@ const addToWalletApi = createAsyncThunk(
                 const { message } = await response.json()
                 throw new Error(message);
             }
-            const { payment, total } = await response.json()
-            return { payment, total } as { payment: number, total: number }
+            const { payment, total }: { payment: number, total: number } = await response.json()
+
+            return { payment, total }
         } catch (error: any) {
             return rejectWithValue(error.message)
         }
@@ -126,17 +127,17 @@ const sendMoneyApi = createAsyncThunk(
 
 const getMyTransactions = createAsyncThunk(
     'users/myTransactions',
-    async (thunkApi, { rejectWithValue, getState }) => {
+    async ({ page, limit }: { page: number, limit: number }, { rejectWithValue, getState }) => {
         const state = getState() as RootState
         let { loggedInUser } = state.users
         try {
-            const response = await fetch(`${backendUrl}myTransactions`, { method: "POST", credentials: 'include', body: loggedInUser?.split(' ')[0] })
+            const response = await fetch(`${backendUrl}myTransactions?page=${page}&limit=${limit}`, { method: "POST", credentials: 'include', body: loggedInUser?.split(' ')[0] })
             if (response.status.toString().includes('4')) {
                 const { message } = await response.json()
                 throw new Error(message);
             }
-            const { myTransactions } = await response.json()
-            return myTransactions as ITransactions[]
+            const { myTransactions, totalTransactions, totalPages, currentPage } = await response.json()
+            return { myTransactions, totalTransactions, totalPages, currentPage } as { myTransactions: ITransactions[], totalTransactions: number, totalPages: number, currentPage: number }
         } catch (error: any) {
             return rejectWithValue(error.message)
         }
