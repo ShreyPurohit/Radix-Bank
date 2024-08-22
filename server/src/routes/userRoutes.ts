@@ -7,13 +7,15 @@ import {
     loginController,
     logoutController,
     sendMoneyController
-} from '../controllers/userContorller'
+} from '../controllers/userContorller1'
+import logger from 'koa-logger'
 
 const router = new Router()
 
+router.get('/alreadyloggeduser', alreadyLoggedController)
+router.use(logger())
 router.post('/login', loginController)
 router.get('/logout', logoutController)
-router.get('/alreadyloggeduser', alreadyLoggedController)
 router.post('/sendMoney', sendMoneyController)
 router.post('/addToWallet', addToWalletController)
 router.get('/usernamelist', getUserNameAndIDController)

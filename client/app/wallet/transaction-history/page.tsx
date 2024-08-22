@@ -5,14 +5,18 @@ import { useEffect, useState } from "react"
 import { getMyTransactions } from "@/lib/store/features/users/usersApi"
 
 const SendMoneyPage = () => {
-    const { myTransactions, loggedInUser, totalPages, currentPage, totalTransactions } = useAppSelector((state) => state.users)
+    const { myTransactions, loggedInUser, totalPages, currentPage } = useAppSelector((state) => state.users)
     const dispatch = useAppDispatch()
 
-    const [currLimit, setCurrLimit] = useState<string>("4")
+    const [currLimit, setCurrLimit] = useState<number>(4)
 
     useEffect(() => {
-        dispatch(getMyTransactions({ page: currentPage, limit: +(currLimit) }))
-    }, [loggedInUser, currLimit])
+        dispatch(getMyTransactions({ page: +(currentPage), limit: currLimit }))
+    }, [loggedInUser, currentPage, dispatch])
+
+    useEffect(() => {
+        dispatch(getMyTransactions({ page: 1, limit: currLimit }))
+    }, [loggedInUser, currLimit, dispatch])
 
     const formatName = (name: string) => {
         const parts = name.split('_');
@@ -22,11 +26,21 @@ const SendMoneyPage = () => {
 
     const handlePageNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        dispatch(getMyTransactions({ page: +(currentPage) + 1, limit: +(currLimit) }))
+        if (+(currentPage) < totalPages) {
+            dispatch(getMyTransactions({ page: +(currentPage) + 1, limit: currLimit }))
+        }
     }
+
     const handlePagePrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        dispatch(getMyTransactions({ page: +(currentPage) - 1, limit: +(currLimit) }))
+        if (+(currentPage) > 1) {
+            dispatch(getMyTransactions({ page: +(currentPage) - 1, limit: currLimit }))
+        }
+    }
+
+    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newLimit = +e.target.value;
+        setCurrLimit(newLimit);
     }
 
     return (
@@ -37,7 +51,7 @@ const SendMoneyPage = () => {
                     <tr>
                         <th>Transaction ID</th>
                         <th>Sender Name</th>
-                        <th>Reciever Name</th>
+                        <th>Receiver Name</th>
                         <th>Amount</th>
                         <th>Timestamp</th>
                         <th>Type</th>
@@ -51,8 +65,8 @@ const SendMoneyPage = () => {
                             <td>{formatName(transaction.recieverName)}</td>
                             <td>{transaction.amount}</td>
                             <td>
-                                {transaction.timestamp.toString().split('T')[0]}{" "}
-                                {transaction.timestamp.toString().split('T')[1].split('.')[0]}
+                                {new Date(transaction.timestamp).toLocaleDateString()}{" "}
+                                {new Date(transaction.timestamp).toLocaleTimeString()}
                             </td>
                             <td className={`${transaction.senderName === loggedInUser?.split(' ')[0] ? 'text-red-500' : 'text-green-500'}`}>
                                 {transaction.senderName === loggedInUser?.split(' ')[0] ? "Debit" : "Credit"}
@@ -62,13 +76,21 @@ const SendMoneyPage = () => {
                 </tbody>
             </table>
             <div className="flex gap-2 justify-center mt-5">
-                <button disabled={currentPage == 1} className="px-3 py-2 bg-slate-200 disabled:bg-gray-500" onClick={handlePagePrevious}>
+                <button
+                    disabled={+(currentPage) === 1}
+                    className="px-3 py-2 bg-slate-200 disabled:bg-gray-500"
+                    onClick={handlePagePrevious}
+                >
                     Back
                 </button>
-                <button disabled={currentPage == totalPages} className="px-3 py-2 bg-slate-200 disabled:bg-gray-500" onClick={handlePageNext}>
+                <button
+                    disabled={+(currentPage) === totalPages}
+                    className="px-3 py-2 bg-slate-200 disabled:bg-gray-500"
+                    onClick={handlePageNext}
+                >
                     Next
                 </button>
-                <select className='w-max' onChange={(e) => setCurrLimit(e.currentTarget.value)} value={currLimit}>
+                <select className='w-max' onChange={handleLimitChange} value={currLimit}>
                     <option value={4}>4</option>
                     <option value={6}>6</option>
                     <option value={8}>8</option>

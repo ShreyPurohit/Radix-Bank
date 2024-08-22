@@ -42,7 +42,7 @@ const LoginPage = () => {
 
     return (
         <main className="md:w-3/4 m-auto md:h-0">
-            <h1>Login Page</h1>
+            <h1>Login</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:w-1/2 m-auto p-5 gap-5 md:mt-5 md:border border-black drop-shadow-md">
                 <div>
                     <label htmlFor="username">Username</label>

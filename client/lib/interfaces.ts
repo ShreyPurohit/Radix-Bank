@@ -32,3 +32,10 @@ export interface ISendMoneyInputs {
     reciepent: string,
     amount: string
 }
+
+export interface IUserListData {
+    _id: string,
+    EmployeeId: number,
+    FirstName: string,
+    LastName: string
+}
