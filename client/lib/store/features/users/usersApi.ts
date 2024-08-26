@@ -23,7 +23,7 @@ const loginUserApi = createAsyncThunk(
     }
 )
 
-const alreadyLoggedIn = createAsyncThunk(
+const alreadyLoggedIn = createAsyncThunk(  
     'users/alreadyLoggedIn',
     async (thunkApi, { rejectWithValue }) => {
         try {
@@ -32,12 +32,11 @@ const alreadyLoggedIn = createAsyncThunk(
                 const { message } = await response.json()
                 throw new Error(message);
             }
-            const { user } = await response.json()
-            console.log('user', user);
+            const { user: { bankBalance, id, password, username, walletBalance } } = await response.json()
 
-            return user
+            return { bankBalance, id, password, username, walletBalance }
         } catch (error: any) {
-            return rejectWithValue(error.message)
+            return rejectWithValue({message: error.message})
         }
     }
 )
@@ -96,7 +95,6 @@ const getUserNameAndIDApi = createAsyncThunk(
                 throw new Error(message);
             }
             const { userlist } = await response.json()
-
             return userlist
         } catch (error: any) {
             return rejectWithValue(error.message)
@@ -117,7 +115,7 @@ const sendMoneyApi = createAsyncThunk(
                 const { message } = await response.json()
                 throw new Error(message);
             }
-            const { message, amount } = await response.json()
+            const { amount } = await response.json()
             return amount
         } catch (error: any) {
             return rejectWithValue(error.message)

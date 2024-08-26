@@ -7,7 +7,7 @@ import {
     loginController,
     logoutController,
     sendMoneyController
-} from '../controllers/userContorller1'
+} from '../controllers/userController'
 import logger from 'koa-logger'
 
 const router = new Router()

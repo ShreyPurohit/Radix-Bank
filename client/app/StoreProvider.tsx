@@ -9,8 +9,20 @@ const StoreProvider = ({ children }: { children: React.ReactNode }) => {
     const storeRef = useRef<AppStore>()
     if (!storeRef.current) {
         storeRef.current = centralStore()
-        storeRef.current.dispatch(alreadyLoggedIn())
+        const getLoginUser = async () => {
+            try {
+                const resultAction = await storeRef.current?.dispatch(alreadyLoggedIn())
+                if (alreadyLoggedIn.fulfilled.match(resultAction)) {
+                    console.log("Found Logged In User");
+                }
+            } catch (error: any) {
+                console.log("No User Logged In");
+                console.log(error.message)
+            }
+        }
+        getLoginUser()
     }
+
     return (
         <Provider store={storeRef.current}>
             {children}

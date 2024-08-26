@@ -94,9 +94,9 @@ const addToWallet = async (amount: string, username: string, ctx: Context): Prom
 
 const getUserNameAndIDService = async (ctx: Context): Promise<void> => {
     try {
-        const userList = await EmployeeModel.find().select('-__v -Email');
+        const userlist = await EmployeeModel.find().select('-__v -Email');
         ctx.status = 200;
-        ctx.body = { message: 'User List Fetched Successfully', userList };
+        ctx.body = { message: 'User List Fetched Successfully', userlist };
     } catch (error) {
         console.error('Fetch User List Error:', error);
         ctx.status = 500;
@@ -166,7 +166,7 @@ const fetchTransactionsService = async (user: string, page: string, limit: strin
             return;
         }
 
-        const [transactions, totalTransactions] = await Promise.all([
+        const [myTransactions, totalTransactions] = await Promise.all([
             TransactionModel.aggregate([
                 {
                     $match: {
@@ -200,7 +200,7 @@ const fetchTransactionsService = async (user: string, page: string, limit: strin
                         senderId: '$senderDetails.Id',
                         transactionId: '$TransactionId',
                         senderName: '$senderDetails.Username',
-                        receiverName: '$receiverDetails.Username',
+                        recieverName: '$receiverDetails.Username',
                         amount: '$Amount',
                         timestamp: '$Timestamp'
                     }
@@ -218,7 +218,7 @@ const fetchTransactionsService = async (user: string, page: string, limit: strin
         ctx.status = 200;
         ctx.body = {
             message: 'My Payments History Fetched Successfully',
-            transactions,
+            myTransactions,
             totalTransactions,
             totalPages,
             currentPage: page

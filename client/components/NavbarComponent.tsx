@@ -6,7 +6,9 @@ const NavBarComponent = () => {
         <nav>
             <ul>
                 <li>
-                    <Link href={"/wallet"}>Wallet Balance</Link>
+                    <Link href={"/wallet"}>
+                        Wallet Balance
+                    </Link>
                 </li>
                 <li>
                     <Link href={"/wallet/add-funds"}>

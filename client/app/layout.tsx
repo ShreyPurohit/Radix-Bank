@@ -16,7 +16,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   return (
     <html lang="en">
       <body className={recursive.className}>
-        <Suspense fallback={<>Loading</>}>
+        <Suspense fallback={<h1>Loading...</h1>}>
           <Toaster position="bottom-right" />
           <StoreProvider>
             {children}
