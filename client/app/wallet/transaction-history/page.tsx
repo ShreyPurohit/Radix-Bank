@@ -1,8 +1,10 @@
 'use client'
 
-import { useAppSelector, useAppDispatch } from "@/lib/store/hooks"
-import { useEffect, useState } from "react"
+import TransactionComponent from "@/components/TransactionComponent"
+import { formatName } from "@/lib/helperFunctions"
 import { getMyTransactions } from "@/lib/store/features/users/usersApi"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
+import { useEffect, useState } from "react"
 
 const SendMoneyPage = () => {
     const { myTransactions, loggedInUser, totalPages, currentPage } = useAppSelector((state) => state.users)
@@ -17,12 +19,6 @@ const SendMoneyPage = () => {
     useEffect(() => {
         dispatch(getMyTransactions({ page: 1, limit: currLimit }))
     }, [loggedInUser, currLimit, dispatch])
-
-    const formatName = (name: string) => {
-        const parts = name.split('_');
-        const formattedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
-        return formattedParts.join(' ');
-    }
 
     const handlePageNext = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -76,25 +72,14 @@ const SendMoneyPage = () => {
                 </tbody>
             </table>
             <div className="flex gap-2 justify-center mt-5">
-                <button
-                    disabled={+(currentPage) === 1}
-                    className="px-3 py-2 bg-slate-200 disabled:bg-gray-500"
-                    onClick={handlePagePrevious}
-                >
-                    Back
-                </button>
-                <button
-                    disabled={+(currentPage) === totalPages}
-                    className="px-3 py-2 bg-slate-200 disabled:bg-gray-500"
-                    onClick={handlePageNext}
-                >
-                    Next
-                </button>
-                <select className='w-max' onChange={handleLimitChange} value={currLimit}>
-                    <option value={4}>4</option>
-                    <option value={6}>6</option>
-                    <option value={8}>8</option>
-                </select>
+                <TransactionComponent
+                    currentPage={currentPage}
+                    currLimit={currLimit}
+                    handleLimitChange={handleLimitChange}
+                    handlePageNext={handlePageNext}
+                    handlePagePrevious={handlePagePrevious}
+                    totalPages={totalPages}
+                />
             </div>
         </main>
     )

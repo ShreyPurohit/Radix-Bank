@@ -1,6 +1,5 @@
 const users: any[] = []
 
-
 const addUser = ({ id, username, room }: { id: string, username: string, room: string }) => {
     // Clean The Data
     username = username.trim()
@@ -18,7 +17,7 @@ const addUser = ({ id, username, room }: { id: string, username: string, room: s
     // Validate Username
     if (existingUser) {
         return {
-            error: "Username Is Already Taken"
+            error: "Already Joined The Room"
         }
     }
     // Store User

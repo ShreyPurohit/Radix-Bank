@@ -6,7 +6,6 @@ const WalletPage = () => {
     const { loading, myBalance, myWalletBalance } = useAppSelector((state) => state.users);
 
     const renderWalletBalance = () => {
-
         if (myWalletBalance <= 0 || myWalletBalance == null) {
             return <p id="walletbalance" className="text-red-600">Wallet not found for the employee.</p>;
         }

@@ -147,7 +147,6 @@ const sendMoneyService = async (receiverID: string, senderName: string, amount: 
                 Amount: Number(amount)
             })
         ]);
-
         ctx.status = 200;
         ctx.body = { message: 'Payment Made Successfully', amount: senderWallet.Balance };
     } catch (error) {

@@ -7,6 +7,7 @@ import { socket } from '@/socket'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
+import { validateAmount } from '@/lib/helperFunctions'
 
 const AddFundsPage = () => {
     const dispatch = useAppDispatch()
@@ -30,9 +31,7 @@ const AddFundsPage = () => {
 
     useEffect(() => {
         setNotification(error)
-        setTimeout(() => {
-            setNotification(null)
-        }, 5000);
+        setTimeout(() => { setNotification(null) }, 5000);
     }, [error])
 
     const onSubmit: SubmitHandler<IAddFundInputs> = async (data) => {
@@ -52,11 +51,6 @@ const AddFundsPage = () => {
         } catch (err) {
             console.error(err)
         }
-    }
-
-    const validateAmount = (value: string) => {
-        const numValue = Number(value)
-        return !value ? "Amount is required." : numValue <= 0 ? "Amount must be greater than 0." : value.length > 8 ? "Amount cannot be more than 8 digits." : true
     }
 
     return (

@@ -28,3 +28,11 @@ export interface IUserSchema extends Document {
     Username: string,
     Password: string,
 }
+
+export interface IWalletSchema extends Document {
+    WalletId: number,
+    EmployeeId: number,
+    Balance: number,
+    CreatedDate: Date,
+    UpdatedDate: Date,
+}

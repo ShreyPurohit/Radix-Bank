@@ -4,15 +4,15 @@ import Koa from 'koa'
 import koaBody from 'koa-body'
 import { parseCookie } from 'koa-cookies'
 import { Server } from 'socket.io'
+import { addUser, removeUser } from './lib/chatFunctions'
 import connectMongoDb from './lib/connectToDb'
 import router from './routes/userRoutes'
-import { addUser, removeUser } from './lib/chatFunctions'
 
 const app = new Koa()
 connectMongoDb()
 
 const httpServer = createServer(app.callback())
-const io = new Server(httpServer, { cors: { origin: "http://localhost:3000" } })
+const io = new Server(httpServer, { cors: { origin: "http://localhost:3000", credentials: true } })
 
 app.use(koaBody({ multipart: true }))
 app.use(cors({ origin: "http://localhost:3000", credentials: true }))

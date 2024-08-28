@@ -1,12 +1,5 @@
-import { Document, Model, model, models, Schema } from "mongoose";
-
-interface IWalletSchema extends Document {
-    WalletId: number,
-    EmployeeId: number,
-    Balance: number,
-    CreatedDate: Date,
-    UpdatedDate: Date,
-}
+import { Model, model, models, Schema } from "mongoose";
+import { IWalletSchema } from "../lib/interfaces";
 
 const walletSchema: Schema<IWalletSchema> = new Schema<IWalletSchema>({
     WalletId: { type: Number, required: true, unique: true },

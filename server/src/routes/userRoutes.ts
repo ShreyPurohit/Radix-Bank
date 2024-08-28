@@ -14,7 +14,7 @@ const router = new Router()
 
 router.get('/alreadyloggeduser', alreadyLoggedController)
 router.use(logger())
-router.post('/login', loginController)
+router.post('/login' ,loginController)
 router.get('/logout', logoutController)
 router.post('/sendMoney', sendMoneyController)
 router.post('/addToWallet', addToWalletController)

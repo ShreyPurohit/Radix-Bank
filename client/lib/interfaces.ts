@@ -39,3 +39,12 @@ export interface IUserListData {
     FirstName: string,
     LastName: string
 }
+
+export interface ITransactonComponentProps {
+    currentPage: number,
+    handlePagePrevious: (e: React.MouseEvent<HTMLButtonElement>) => void
+    totalPages: number,
+    handlePageNext: (e: React.MouseEvent<HTMLButtonElement>) => void,
+    handleLimitChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+    currLimit: number
+}

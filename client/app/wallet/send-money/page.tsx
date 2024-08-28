@@ -6,7 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 import { socket } from '@/socket'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { validateAmount } from '@/lib/helperFunctions'
 
 const useFilteredUserList = (userListData: IUserListData[], loggedInUser: string) => {
     return useMemo(() => {
@@ -44,9 +45,7 @@ const SendMoneyPage = () => {
 
     useEffect(() => {
         setNotification(error)
-        setTimeout(() => {
-            setNotification(null)
-        }, 5000);
+        setTimeout(() => { setNotification(null) }, 5000);
     }, [error])
 
     const filteredUserList = useFilteredUserList(userListData, loggedInUser!)
@@ -82,11 +81,6 @@ const SendMoneyPage = () => {
         } catch (err) {
             console.error(err)
         }
-    }
-
-    const validateAmount = (value: string) => {
-        const numValue = Number(value)
-        return !value ? "Amount is required." : numValue <= 0 ? "Amount must be greater than 0." : value.length > 8 ? "Amount cannot exceed 8 digits" : true
     }
 
     return (
