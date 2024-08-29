@@ -1,6 +1,6 @@
-import { alreadyLoggedIn, loginUserApi, addToWalletApi, sendMoneyApi, getMyTransactions } from "./usersApi";
 import { IUserState } from "@/lib/interfaces";
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
+import { addToWalletApi, alreadyLoggedIn, getMyTransactions, loginUserApi, sendMoneyApi, walletDetailsApi } from "./usersApi";
 
 const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     // Checking And Updating Already Logged In User On Refresh----------------------------  
@@ -79,6 +79,21 @@ const extraReducers = (builder: ActionReducerMapBuilder<IUserState>) => {
     builder.addCase(getMyTransactions.rejected, (state, action) => {
         state.loading = false
         state.error = String(action.payload) || "Failed To Fetch My Transactions"
+    })
+
+    // Update Wallet Details
+    builder.addCase(walletDetailsApi.fulfilled, (state, action) => {
+        state.loading = false
+        state.error = null
+        state.myBalance = action.payload.bankBalance
+        state.myWalletBalance = action.payload.walletBalance
+    })
+    builder.addCase(walletDetailsApi.pending, (state) => {
+        state.loading = true
+    })
+    builder.addCase(walletDetailsApi.rejected, (state, action) => {
+        state.loading = false
+        state.error = String(action.payload) || "Failed To Fetch My Wallet Details"
     })
 }
 

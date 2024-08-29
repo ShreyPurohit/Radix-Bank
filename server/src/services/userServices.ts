@@ -48,6 +48,31 @@ const loginService = async (username: string, password: string, ctx: Context): P
     }
 };
 
+const fetchUserWalletService = async (username: string, ctx: Context): Promise<void> => {
+    try {
+        const user = await UserModel.findOne({ Username: username });
+        if (!user) {
+            ctx.status = 404;
+            ctx.body = { message: 'User Not Found' };
+            return;
+        }
+        const [bankDetails, walletDetails] = await Promise.all([
+            BankAccountModel.findOne({ EmployeeId: user.Id }).select('Balance'),
+            WalletModel.findOne({ EmployeeId: user.Id }).select('Balance')
+        ]);
+        ctx.status = 200
+        ctx.body = {
+            message: "Bank Details Fetched Successfully",
+            bankBalance: bankDetails?.Balance,
+            walletBalance: walletDetails?.Balance
+        }
+    } catch (error) {
+        console.error('User Wallet Error:', error);
+        ctx.status = 500;
+        ctx.body = { message: 'Internal Server Error' };
+    }
+}
+
 const addToWallet = async (amount: string, username: string, ctx: Context): Promise<void> => {
     try {
         const user = await UserModel.findOne({ Username: username });
@@ -229,4 +254,4 @@ const fetchTransactionsService = async (user: string, page: string, limit: strin
     }
 };
 
-export { addToWallet, fetchTransactionsService, getUserNameAndIDService, loginService, sendMoneyService };
+export { addToWallet, fetchTransactionsService, getUserNameAndIDService, loginService, sendMoneyService, fetchUserWalletService };

@@ -23,7 +23,7 @@ const loginUserApi = createAsyncThunk(
     }
 )
 
-const alreadyLoggedIn = createAsyncThunk(  
+const alreadyLoggedIn = createAsyncThunk(
     'users/alreadyLoggedIn',
     async (thunkApi, { rejectWithValue }) => {
         try {
@@ -36,7 +36,7 @@ const alreadyLoggedIn = createAsyncThunk(
 
             return { bankBalance, id, password, username, walletBalance }
         } catch (error: any) {
-            return rejectWithValue({message: error.message})
+            return rejectWithValue({ message: error.message })
         }
     }
 )
@@ -142,4 +142,23 @@ const getMyTransactions = createAsyncThunk(
     }
 )
 
-export { alreadyLoggedIn, loginUserApi, logoutUsersApi, addToWalletApi, getUserNameAndIDApi, sendMoneyApi, getMyTransactions }
+const walletDetailsApi = createAsyncThunk(
+    'users/mywallet',
+    async (thunkApi, { rejectWithValue, getState }) => {
+        const state = getState() as RootState
+        const { loggedInUser } = state.users
+        try {
+            const response = await fetch(`${backendUrl}mywallet`, { method: "POST", credentials: 'include', body: loggedInUser?.split(' ')[0] })
+            if (response.status.toString().includes('4')) {
+                const { message } = await response.json()
+                throw new Error(message);
+            }
+            const { bankBalance, walletBalance } = await response.json()
+            return { bankBalance, walletBalance } as { bankBalance: number, walletBalance: number }
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+export { alreadyLoggedIn, loginUserApi, logoutUsersApi, addToWalletApi, getUserNameAndIDApi, sendMoneyApi, getMyTransactions, walletDetailsApi }

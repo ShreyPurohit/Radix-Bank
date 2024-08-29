@@ -1,11 +1,12 @@
 import { Context } from 'koa';
 import { decrypt } from '../lib/cookieAuth';
 import {
-    loginService,
     addToWallet,
+    fetchTransactionsService,
+    fetchUserWalletService,
     getUserNameAndIDService,
-    sendMoneyService,
-    fetchTransactionsService
+    loginService,
+    sendMoneyService
 } from '../services/userServices';
 
 const alreadyLoggedController = (ctx: Context) => {
@@ -28,6 +29,17 @@ const alreadyLoggedController = (ctx: Context) => {
         ctx.body = { message: 'Internal Server Error' };
     }
 };
+
+const fetchWalletDetailsController = async (ctx: Context) => {
+    try {
+        const username = ctx.request.body
+        await fetchUserWalletService(username, ctx)
+    } catch (error) {
+        console.error('Wallet Details Error:', error);
+        ctx.status = 500;
+        ctx.body = { message: 'Internal Server Error' };
+    }
+}
 
 const loginController = async (ctx: Context) => {
     const { Username, Password } = ctx.request.body;
@@ -134,11 +146,6 @@ const fetchTransactionsController = async (ctx: any) => {
 };
 
 export {
-    alreadyLoggedController,
-    loginController,
-    logoutController,
-    addToWalletController,
-    getUserNameAndIDController,
-    sendMoneyController,
-    fetchTransactionsController
+    addToWalletController, alreadyLoggedController, fetchTransactionsController, getUserNameAndIDController, loginController,
+    logoutController, sendMoneyController, fetchWalletDetailsController
 };

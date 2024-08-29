@@ -7,7 +7,6 @@ import { socket } from '@/socket'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
-import { validateAmount } from '@/lib/helperFunctions'
 
 const useFilteredUserList = (userListData: IUserListData[], loggedInUser: string) => {
     return useMemo(() => {
@@ -26,27 +25,12 @@ const SendMoneyPage = () => {
     const [notification, setNotification] = useState<string | null>(null)
 
     useEffect(() => {
-        socket.emit('join room', { to: loggedInUser?.split(' ')[1] })
-    }, [loggedInUser])
-
-    useEffect(() => {
         const fetchUserList = async () => {
             const resultAction = await dispatch(getUserNameAndIDApi())
             setUserListData(resultAction.payload)
         }
         fetchUserList()
-
-        socket.on('reciever-notification', (message) => {
-            setNotification(message)
-            setTimeout(() => setNotification(null), 5000)
-        })
-        return () => { socket.off('reciever-notification') }
     }, [dispatch])
-
-    useEffect(() => {
-        setNotification(error)
-        setTimeout(() => { setNotification(null) }, 5000);
-    }, [error])
 
     const filteredUserList = useFilteredUserList(userListData, loggedInUser!)
 
@@ -69,18 +53,19 @@ const SendMoneyPage = () => {
             if (sendMoneyApi.fulfilled.match(resultAction)) {
                 socket.emit('reciever-join', { reciever: data.reciepent, amount: data.amount }, (error: any) => {
                     if (error) return toast.error(error)
-
                     setNotification(`Payment sent: ${data.amount}`)
                     setTimeout(() => setNotification(null), 5000)
                 })
                 reset()
-            } else if (error) {
-                setNotification(error)
-                setTimeout(() => setNotification(null), 5000)
             }
         } catch (err) {
             console.error(err)
         }
+    }
+
+    const validateAmount = (value: string) => {
+        const numValue = Number(value)
+        return !value ? "Amount is required." : numValue <= 0 ? "Amount must be greater than 0." : value.length > 8 ? "Amount cannot exceed 8 digits" : true
     }
 
     return (

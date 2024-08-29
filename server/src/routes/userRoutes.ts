@@ -3,6 +3,7 @@ import {
     addToWalletController,
     alreadyLoggedController,
     fetchTransactionsController,
+    fetchWalletDetailsController,
     getUserNameAndIDController,
     loginController,
     logoutController,
@@ -20,5 +21,6 @@ router.post('/sendMoney', sendMoneyController)
 router.post('/addToWallet', addToWalletController)
 router.get('/usernamelist', getUserNameAndIDController)
 router.post('/myTransactions', fetchTransactionsController)
+router.post('/mywallet', fetchWalletDetailsController)
 
 export default router
