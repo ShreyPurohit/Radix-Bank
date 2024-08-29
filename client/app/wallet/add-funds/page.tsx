@@ -1,5 +1,6 @@
 'use client'
 
+import ErrorComponent from '@/components/ErrorComponent'
 import { validateAmount } from '@/lib/helperFunctions'
 import { IAddFundInputs } from '@/lib/interfaces'
 import { addToWalletApi } from '@/lib/store/features/users/usersApi'
@@ -44,12 +45,13 @@ const AddFundsPage = () => {
                     <input type="number" id='amount' placeholder='Amount' {...register('Amount', { validate: validateAmount })} />
                     {errors.Amount && (<span className='errordiv'>{errors.Amount.message}</span>)}
                 </div>
-                <button id='addFundsConfirmButton' disabled={!!errors.Amount} className="px-4 py-2 bg-slate-400 hover:bg-slate-600 hover:text-white rounded-lg disabled:bg-gray-600">Add Funds</button>
-                {error && (
-                    <h2 id='errBalance' className="text-center text-2xl text-amber-700 tracking-wide uppercase">
-                        {error}
-                    </h2>
-                )}
+                <button
+                    id='addFundsConfirmButton'
+                    disabled={!!errors.Amount}
+                    className="px-4 py-2 bg-slate-400 hover:bg-slate-600 hover:text-white rounded-lg disabled:bg-gray-600">
+                    Add Funds
+                </button>
+                <ErrorComponent />
             </form>
         </main>
     )

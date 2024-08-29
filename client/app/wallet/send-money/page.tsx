@@ -7,6 +7,7 @@ import { socket } from '@/socket'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
+import ErrorComponent from '@/components/ErrorComponent'
 
 const useFilteredUserList = (userListData: IUserListData[], loggedInUser: string) => {
     return useMemo(() => {
@@ -20,7 +21,7 @@ const useFilteredUserList = (userListData: IUserListData[], loggedInUser: string
 
 const SendMoneyPage = () => {
     const dispatch = useAppDispatch()
-    const { loggedInUser, error } = useAppSelector((state) => state.users)
+    const { loggedInUser } = useAppSelector((state) => state.users)
     const [userListData, setUserListData] = useState<IUserListData[]>([])
     const [notification, setNotification] = useState<string | null>(null)
 
@@ -90,11 +91,7 @@ const SendMoneyPage = () => {
                     {errors.amount && (<span className='errordiv'>{errors.amount.message}</span>)}
                 </div>
                 <button id='btnSend' disabled={!!errors.amount || !!errors.reciepent} className="px-4 py-2 bg-slate-400 hover:bg-slate-600 hover:text-white rounded-lg disabled:bg-gray-600">Send Money</button>
-                {error && (
-                    <h2 id='errBalance' className="text-center text-2xl text-amber-700 tracking-wide uppercase">
-                        {error}
-                    </h2>
-                )}
+                <ErrorComponent />
             </form>
         </main>
     )
