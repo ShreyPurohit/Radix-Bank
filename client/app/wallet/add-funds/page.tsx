@@ -1,7 +1,6 @@
 'use client'
 
 import ErrorComponent from '@/components/ErrorComponent'
-import { validateAmount } from '@/lib/helperFunctions'
 import { IAddFundInputs } from '@/lib/interfaces'
 import { addToWalletApi } from '@/lib/store/features/users/usersApi'
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
@@ -11,7 +10,7 @@ import { toast } from 'react-hot-toast'
 
 const AddFundsPage = () => {
     const dispatch = useAppDispatch()
-    const { error, loggedInUser } = useAppSelector((state) => state.users)
+    const { loggedInUser } = useAppSelector((state) => state.users)
 
     const {
         register,
@@ -35,6 +34,21 @@ const AddFundsPage = () => {
             console.error(err)
         }
     }
+
+    const validateAmount = (value: string) => {
+        const numValue = Number(value);
+        let message;
+        if (!value) {
+            message = "Amount is required.";
+        } else if (numValue <= 0) {
+            message = "Amount must be greater than 0.";
+        } else if (value.length > 8) {
+            message = "Amount cannot be more than 8 digits.";
+        } else {
+            return true;
+        }
+        return message;
+    };
 
     return (
         <main>

@@ -41,28 +41,6 @@ const alreadyLoggedIn = createAsyncThunk(
     }
 )
 
-const logoutUsersApi = createAsyncThunk(
-    'users/logoutUser',
-    async (thunkApi, { rejectWithValue, getState }) => {
-        try {
-            const state = getState() as RootState
-            let { loggedInUser } = state.users
-            const response = await fetch('http://localhost:4000/logout', { credentials: 'include' })
-            if (response.status.toString().includes('4')) {
-                const { message } = await response.json()
-                throw new Error(message);
-            }
-            if (response.ok) {
-                loggedInUser = null
-            } else {
-                console.error('Failed to log out');
-            }
-        } catch (error: any) {
-            return rejectWithValue(error.message)
-        }
-    }
-)
-
 const addToWalletApi = createAsyncThunk(
     'users/addtoWallet',
     async (formData: FormData, { rejectWithValue, getState }) => {
@@ -160,5 +138,21 @@ const walletDetailsApi = createAsyncThunk(
         }
     }
 )
+
+const logoutUsersApi = createAsyncThunk(
+    'users/logoutUser',
+    async (thunkApi, { rejectWithValue, getState }) => {
+        try {
+            const response = await fetch('http://localhost:4000/logout', { credentials: 'include' })
+            if (response.status.toString().includes('4')) {
+                const { message } = await response.json()
+                throw new Error(message);
+            }
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
 
 export { alreadyLoggedIn, loginUserApi, logoutUsersApi, addToWalletApi, getUserNameAndIDApi, sendMoneyApi, getMyTransactions, walletDetailsApi }

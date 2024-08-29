@@ -33,7 +33,7 @@ const SendMoneyPage = () => {
         fetchUserList()
     }, [dispatch])
 
-    const filteredUserList = useFilteredUserList(userListData, loggedInUser!)
+    const filteredUserList = useFilteredUserList(userListData, String(loggedInUser))
 
     const {
         register,
@@ -65,9 +65,19 @@ const SendMoneyPage = () => {
     }
 
     const validateAmount = (value: string) => {
-        const numValue = Number(value)
-        return !value ? "Amount is required." : numValue <= 0 ? "Amount must be greater than 0." : value.length > 8 ? "Amount cannot exceed 8 digits" : true
-    }
+        const numValue = Number(value);
+        let message;
+        if (!value) {
+            message = "Amount is required.";
+        } else if (numValue <= 0) {
+            message = "Amount must be greater than 0.";
+        } else if (value.length > 8) {
+            message = "Amount cannot exceed 8 digits";
+        } else {
+            return true;
+        }
+        return message;
+    };
 
     return (
         <main>
